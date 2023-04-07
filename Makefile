@@ -191,14 +191,7 @@ UPROGS=\
 	_zombie\
         _shutdown\
         _test_loop\
-		_test_loop2\
         _test_loop3\
-		_test_fork\
-		_test_fork2\
-		_test_priofork\
-		_test_priofork2\
-		_test_priofork3\
-		_test_priofork4\
 
 
 fs.img: mkfs README $(UPROGS)

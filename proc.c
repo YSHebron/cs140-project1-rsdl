@@ -448,8 +448,6 @@ priofork(int default_level)
   if((np = allocproc()) == 0){
     return -1;
   }
-  if (schedlog_active)
-  cprintf("At priofork after allocproc, np->pid = %d, curproc->pid = %d\n", np->pid, curproc->pid);
 
   // Copy process state from proc.
   if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz)) == 0){
@@ -479,8 +477,6 @@ priofork(int default_level)
   np->default_level = default_level;  // set priority level
   np->state = RUNNABLE;
    // only enqueue here since we are sure that allocation is successful
-  if (schedlog_active)
-  cprintf("Enqueue np->pid = %d to its default_level = %d\n", np->pid, np->default_level);
   struct level_queue *q = find_available_queue(np->default_level, np->default_level);
   enqueue_proc(np, q);
 
@@ -537,7 +533,6 @@ exit(void)
   }
 
   // Process exited, remove from its queue
-  if (schedlog_active) cprintf("PID %d exited, removing from active set\n", curproc->pid);
   remove_proc_from_levels(curproc);
 
   // Jump into the scheduler, never to return.
@@ -631,15 +626,12 @@ scheduler(void)
         }
       }
       release(&q->lock);
-      if (found) {
-        if (schedlog_active) cprintf("%d|Scheduled PID %d in level %d\n", ticks, p->pid, k);
+      if (found)
         break;
-      }
     }
 
     if (schedlog_active && ticks > schedlog_lasttick) {
         schedlog_active = 0;
-        cprintf("DEACTIVATE schedlog\n");
     }
 
     if (found) {
@@ -653,16 +645,13 @@ scheduler(void)
 
       if (schedlog_active && ticks <= schedlog_lasttick) {
         print_schedlog();
-        cprintf("-----\n");
       }
 
       swtch(&(c->scheduler), p->context);
-      if (schedlog_active) cprintf("%d|PID %d returned from swtch, select next!\n", ticks, p->pid);
       switchkvm();
 
       // proc has given up control to scheduler
       if (q->ticks_left <= 0) {
-        if (schedlog_active) cprintf("%d|Level %d quantum depleted\n", ticks, k);
         // level-local quantum depleted, migrate all procs
         while (q->numproc > 0) {
           np = q->proc[0];
@@ -678,14 +667,6 @@ scheduler(void)
           // move proc to next available level in active set
           // if none, enqueue to original level in expired set
           nq = find_available_queue(k+1, np->default_level);
-
-          if (schedlog_active) {
-            if (is_active_set(nq)) {
-              cprintf("%d|Move PID %d from level %d to active level %d\n", ticks, np->pid, k, nq-ptable.active);
-            } else if (is_expired_set(nq)) {
-              cprintf("%d|Move PID %d from level %d to expired level %d\n", ticks, np->pid, k, nq-ptable.expired);
-            }
-          }
           // re-enqueue to same level but in active set, or below
           enqueue_proc(np, nq);
         }
@@ -693,11 +674,9 @@ scheduler(void)
         // If proc called exit, it already unqueued itself; no need to re-enqueue
         if (p->state != ZOMBIE) {
           // active process is the last process to be enqueued
-          if (schedlog_active) cprintf("%d|Move curproc PID %d from level %d to lower level\n", ticks, p->pid, k);
           nq = find_available_queue(k+1, p->default_level);
           enqueue_proc(p, nq);
         }
-
       } else {
         // NOTE: if local-level quantum was depleted, procs have already been
         //       replenished and reprioritized, so we only do things below
@@ -705,11 +684,9 @@ scheduler(void)
         // Check if we need to replenish quantum or move to lower priority queue
         if (p->ticks_left <= 0) {
           // proc used up quantum: enqueue to lower priority
-          if (schedlog_active  && p->state != ZOMBIE) cprintf("%d|Curproc (PID %d) used up quantum, enqueue to lower lvl\n", ticks, p->pid);
           p->ticks_left = RSDL_PROC_QUANTUM;
           nk = k + 1;
         } else {
-          if (schedlog_active  && p->state != ZOMBIE) cprintf("%d|Curproc (PID %d) still have quantum, enqueue to same lvl %d\n", ticks, p->pid, k);
           // proc yielded with remaining quantum: re-enqueue to same level
           nk = k;
         }
@@ -739,9 +716,6 @@ scheduler(void)
     } else {
       // No RUNNABLE proc found; Can happen before initcode runs, all procs sleeping but will return after n ms, etc.
       // Since there are no procs ready in active set, we swap sets
-      if (schedlog_active) {
-        cprintf("%d|No RUNNABLE proc found, SWAP SETS!\n", ticks);
-      }
       nq = ptable.active;
       ptable.active = ptable.expired;
       ptable.expired = nq;

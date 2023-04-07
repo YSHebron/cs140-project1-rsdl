@@ -1,0 +1,619 @@
+gcc -fno-pic -static -fno-builtin -fno-strict-aliasing -Og -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer -fno-delete-null-pointer-checks -std=gnu99 -fno-stack-protector -fno-pie -no-pie   -c -o proc.o proc.c
+ld -m    elf_i386 -T kernel.ld -o kernel entry.o bio.o console.o exec.o file.o fs.o ide.o ioapic.o kalloc.o kbd.o kshutdown.o lapic.o log.o main.o mp.o picirq.o pipe.o proc.o sleeplock.o spinlock.o string.o swtch.o syscall.o sysfile.o sysproc.o trapasm.o trap.o uart.o vectors.o vm.o  -b binary initcode entryother
+objdump -S kernel > kernel.asm
+objdump -t kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$/d' > kernel.sym
+dd if=/dev/zero of=xv6.img count=10000
+dd if=bootblock of=xv6.img conv=notrunc
+dd if=kernel of=xv6.img seek=1 conv=notrunc
+qemu-system-i386 -nographic -device isa-debug-exit -drive file=fs.img,index=1,media=disk,format=raw -drive file=xv6.img,index=0,media=disk,format=raw -smp 1 -m 512  || true
+c[?7l[2J[0mSeaBIOS (version 1.15.0-1)
+
+
+iPXE (https://ipxe.org) 00:03.0 CA00 PCI2.10 PnP PMM+1FF8B4A0+1FECB4A0 CA00
+Press Ctrl-B to configure iPXE (PCI 00:03.0)...                                                                               
+
+
+Booting from Hard Disk..xv6...
+cpu0: starting 0
+sb: size 2000 nblocks 1941 ninodes 200 nlog 30 logstart 2 inodestart 32 bmap start 58
+init: starting sh
+$ test_priofork2
+rsdl.h: levels=5, starting_level=0, proc_quantum=20, level_quantum=55
+At priofork after allocproc, np->pid = 4, curproc->pid = 3
+Enqueue np->pid = 4 to its default_level = 0
+At priofork after allocproc, np->pid = 5, curproc->pid = 3
+Enqueue np->pid = 5 to its default_level = 1
+At priofork after allocproc, np->pid = 6, curproc->pid = 3
+Enqueue np->pid = 6 to its default_level = 0
+At priofork after allocproc, np->pid = 7, curproc->pid = 3
+Enqueue np->pid = 7 to its default_level = 1
+At priofork after allocproc, np->pid = 8, curproc->pid = 3
+Enqueue np->pid = 8 to its default_level = 3
+417|PID 3 returned from swtch, select next!
+417|Curproc (PID 3) still have quantum, enqueue to same lvl 0
+417|Scheduled PID 4 in level 0
+417|active|0(51),[1]init:2(20),[2]sh:2(20),[4]test_priofork2:4(20),[6]test_priofork2:3(20),[3]test_priofork2:2(16)
+417|active|1(55),[5]test_priofork2:3(20),[7]test_priofork2:3(20)
+417|active|2(55)
+417|active|3(55),[8]test_priofork2:3(20)
+417|active|4(55)
+417|expired|0(55)
+417|expired|1(55)
+417|expired|2(55)
+417|expired|3(55)
+417|expired|4(55)
+-----
+419|PID 4 returned from swtch, select next!
+419|Curproc (PID 4) still have quantum, enqueue to same lvl 0
+419|Scheduled PID 6 in level 0
+419|active|0(49),[1]init:2(20),[2]sh:2(20),[6]test_priofork2:4(20),[3]test_priofork2:2(16),[4]test_priofork2:3(18)
+419|active|1(55),[5]test_priofork2:3(20),[7]test_priofork2:3(20)
+419|active|2(55)
+419|active|3(55),[8]test_priofork2:3(20)
+419|active|4(55)
+419|expired|0(55)
+419|expired|1(55)
+419|expired|2(55)
+419|expired|3(55)
+419|expired|4(55)
+-----
+420|PID 6 returned from swtch, select next!
+420|Curproc (PID 6) still have quantum, enqueue to same lvl 0
+420|Scheduled PID 4 in level 0
+420|active|0(48),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[4]test_priofork2:4(18),[6]test_priofork2:2(19)
+420|active|1(55),[5]test_priofork2:3(20),[7]test_priofork2:3(20)
+420|active|2(55)
+420|active|3(55),[8]test_priofork2:3(20)
+420|active|4(55)
+420|expired|0(55)
+420|expired|1(55)
+420|expired|2(55)
+420|expired|3(55)
+420|expired|4(55)
+-----
+421|PID 4 returned from swtch, select next!
+421|Curproc (PID 4) still have quantum, enqueue to same lvl 0
+421|Scheduled PID 4 in level 0
+421|active|0(47),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[6]test_priofork2:2(19),[4]test_priofork2:4(17)
+421|active|1(55),[5]test_priofork2:3(20),[7]test_priofork2:3(20)
+421|active|2(55)
+421|active|3(55),[8]test_priofork2:3(20)
+421|active|4(55)
+421|expired|0(55)
+421|expired|1(55)
+421|expired|2(55)
+421|expired|3(55)
+421|expired|4(55)
+-----
+422|PID 4 returned from swtch, select next!
+422|Curproc (PID 4) still have quantum, enqueue to same lvl 0
+422|Scheduled PID 4 in level 0
+422|active|0(46),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[6]test_priofork2:2(19),[4]test_priofork2:4(16)
+422|active|1(55),[5]test_priofork2:3(20),[7]test_priofork2:3(20)
+422|active|2(55)
+422|active|3(55),[8]test_priofork2:3(20)
+422|active|4(55)
+422|expired|0(55)
+422|expired|1(55)
+422|expired|2(55)
+422|expired|3(55)
+422|expired|4(55)
+-----
+At priofork after allocproc, np->pid = 9, curproc->pid = 4
+Enqueue np->pid = 9 to its default_level = 4
+424|PID 4 returned from swtch, select next!
+424|Curproc (PID 4) still have quantum, enqueue to same lvl 0
+424|Scheduled PID 6 in level 0
+424|active|0(44),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[6]test_priofork2:4(19),[4]test_loop2:2(14)
+424|active|1(55),[5]test_priofork2:3(20),[7]test_priofork2:3(20)
+424|active|2(55)
+424|active|3(55),[8]test_priofork2:3(20)
+424|active|4(55),[9]test_loop2:3(20)
+424|expired|0(55)
+424|expired|1(55)
+424|expired|2(55)
+424|expired|3(55)
+424|expired|4(55)
+-----
+At priofork after allocproc, np->pid = 10, curproc->pid = 6
+Enqueue np->pid = 10 to its default_level = 4
+427|PID 6 returned from swtch, select next!
+427|Curproc (PID 6) still have quantum, enqueue to same lvl 0
+427|Scheduled PID 5 in level 1
+427|active|0(41),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[4]test_loop2:2(14),[6]test_loop2:2(16)
+427|active|1(55),[5]test_priofork2:4(20),[7]test_priofork2:3(20)
+427|active|2(55)
+427|active|3(55),[8]test_priofork2:3(20)
+427|active|4(55),[9]test_loop2:3(20),[10]test_loop2:3(20)
+427|expired|0(55)
+427|expired|1(55)
+427|expired|2(55)
+427|expired|3(55)
+427|expired|4(55)
+-----
+At priofork after allocproc, np->pid = 11, curproc->pid = 5
+Enqueue np->pid = 11 to its default_level = 4
+429|PID 5 returned from swtch, select next!
+429|Curproc (PID 5) still have quantum, enqueue to same lvl 1
+430|Scheduled PID 7 in level 1
+430|active|0(41),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[4]test_loop2:2(14),[6]test_loop2:2(16)
+430|active|1(53),[7]test_priofork2:4(20),[5]test_loop2:2(18)
+430|active|2(55)
+430|active|3(55),[8]test_priofork2:3(20)
+430|active|4(55),[9]test_loop2:3(20),[10]test_loop2:3(20),[11]test_loop2:3(20)
+430|expired|0(55)
+430|expired|1(55)
+430|expired|2(55)
+430|expired|3(55)
+430|expired|4(55)
+-----
+At priofork after allocproc, np->pid = 12, curproc->pid = 7
+Enqueue np->pid = 12 to its default_level = 4
+432|PID 7 returned from swtch, select next!
+432|Curproc (PID 7) still have quantum, enqueue to same lvl 1
+433|Scheduled PID 8 in level 3
+433|active|0(41),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[4]test_loop2:2(14),[6]test_loop2:2(16)
+433|active|1(51),[5]test_loop2:2(18),[7]test_loop2:2(18)
+433|active|2(55)
+433|active|3(55),[8]test_priofork2:4(20)
+433|active|4(55),[9]test_loop2:3(20),[10]test_loop2:3(20),[11]test_loop2:3(20),[12]test_loop2:3(20)
+433|expired|0(55)
+433|expired|1(55)
+433|expired|2(55)
+433|expired|3(55)
+433|expired|4(55)
+-----
+At priofork after allocproc, np->pid = 13, curproc->pid = 8
+Enqueue np->pid = 13 to its default_level = 4
+435|PID 8 returned from swtch, select next!
+435|Curproc (PID 8) still have quantum, enqueue to same lvl 3
+436|Scheduled PID 9 in level 4
+436|active|0(41),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[4]test_loop2:2(14),[6]test_loop2:2(16)
+436|active|1(51),[5]test_loop2:2(18),[7]test_loop2:2(18)
+436|active|2(55)
+436|active|3(53),[8]test_loop2:2(18)
+436|active|4(55),[9]test_loop2:4(20),[10]test_loop2:3(20),[11]test_loop2:3(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+436|expired|0(55)
+436|expired|1(55)
+436|expired|2(55)
+436|expired|3(55)
+436|expired|4(55)
+-----
+456|PID 9 returned from swtch, select next!
+456|Curproc (PID 9) used up quantum, enqueue to lower lvl
+456|Scheduled PID 10 in level 4
+456|active|0(41),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[4]test_loop2:2(14),[6]test_loop2:2(16)
+456|active|1(51),[5]test_loop2:2(18),[7]test_loop2:2(18)
+456|active|2(55)
+456|active|3(53),[8]test_loop2:2(18)
+456|active|4(35),[10]test_loop2:4(20),[11]test_loop2:3(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+456|expired|0(55)
+456|expired|1(55)
+456|expired|2(55)
+456|expired|3(55)
+456|expired|4(55),[9]test_loop2:3(20)
+-----
+476|PID 10 returned from swtch, select next!
+476|Curproc (PID 10) used up quantum, enqueue to lower lvl
+476|Scheduled PID 11 in level 4
+476|active|0(41),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(16),[4]test_loop2:2(14),[6]test_loop2:2(16)
+476|active|1(51),[5]test_loop2:2(18),[7]test_loop2:2(18)
+476|active|2(55)
+476|active|3(53),[8]test_loop2:2(18)
+476|active|4(15),[11]test_loop2:4(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+476|expired|0(55)
+476|expired|1(55)
+476|expired|2(55)
+476|expired|3(55)
+476|expired|4(55),[9]test_loop2:3(20),[10]test_loop2:3(20)
+-----
+491|PID 11 returned from swtch, select next!
+491|Level 4 quantum depleted
+491|Move PID 12 from level 4 to expired level 4
+491|Move PID 13 from level 4 to expired level 4
+491|Move curproc PID 11 from level 4 to lower level
+491|No RUNNABLE proc found, SWAP SETS!
+491|Scheduled PID 9 in level 4
+491|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20),[4]test_loop2:2(20),[6]test_loop2:2(20)
+491|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+491|active|2(55)
+491|active|3(55),[8]test_loop2:2(20)
+491|active|4(55),[9]test_loop2:4(20),[10]test_loop2:3(20),[12]test_loop2:3(20),[13]test_loop2:3(20),[11]test_loop2:3(20)
+491|expired|0(55)
+491|expired|1(55)
+491|expired|2(55)
+491|expired|3(55)
+491|expired|4(55)
+-----
+511|PID 9 returned from swtch, select next!
+511|Curproc (PID 9) used up quantum, enqueue to lower lvl
+511|Scheduled PID 10 in level 4
+511|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20),[4]test_loop2:2(20),[6]test_loop2:2(20)
+511|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+511|active|2(55)
+511|active|3(55),[8]test_loop2:2(20)
+511|active|4(35),[10]test_loop2:4(20),[12]test_loop2:3(20),[13]test_loop2:3(20),[11]test_loop2:3(20)
+511|expired|0(55)
+511|expired|1(55)
+511|expired|2(55)
+511|expired|3(55)
+511|expired|4(55),[9]test_loop2:3(20)
+-----
+531|PID 10 returned from swtch, select next!
+531|Curproc (PID 10) used up quantum, enqueue to lower lvl
+531|Scheduled PID 12 in level 4
+531|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20),[4]test_loop2:2(20),[6]test_loop2:2(20)
+531|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+531|active|2(55)
+531|active|3(55),[8]test_loop2:2(20)
+531|active|4(15),[12]test_loop2:4(20),[13]test_loop2:3(20),[11]test_loop2:3(20)
+531|expired|0(55)
+531|expired|1(55)
+531|expired|2(55)
+531|expired|3(55)
+531|expired|4(55),[9]test_loop2:3(20),[10]test_loop2:3(20)
+-----
+546|PID 12 returned from swtch, select next!
+546|Level 4 quantum depleted
+546|Move PID 13 from level 4 to expired level 4
+546|Move PID 11 from level 4 to expired level 4
+546|Move curproc PID 12 from level 4 to lower level
+546|No RUNNABLE proc found, SWAP SETS!
+546|Scheduled PID 9 in level 4
+546|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20),[4]test_loop2:2(20),[6]test_loop2:2(20)
+546|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+546|active|2(55)
+546|active|3(55),[8]test_loop2:2(20)
+546|active|4(55),[9]test_loop2:4(20),[10]test_loop2:3(20),[13]test_loop2:3(20),[11]test_loop2:3(20),[12]test_loop2:3(20)
+546|expired|0(55)
+546|expired|1(55)
+546|expired|2(55)
+546|expired|3(55)
+546|expired|4(55)
+-----
+566|PID 9 returned from swtch, select next!
+566|Curproc (PID 9) used up quantum, enqueue to lower lvl
+566|Scheduled PID 10 in level 4
+566|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20),[4]test_loop2:2(20),[6]test_loop2:2(20)
+566|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+566|active|2(55)
+566|active|3(55),[8]test_loop2:2(20)
+566|active|4(35),[10]test_loop2:4(20),[13]test_loop2:3(20),[11]test_loop2:3(20),[12]test_loop2:3(20)
+566|expired|0(55)
+566|expired|1(55)
+566|expired|2(55)
+566|expired|3(55)
+566|expired|4(55),[9]test_loop2:3(20)
+-----
+586|PID 10 returned from swtch, select next!
+586|Curproc (PID 10) used up quantum, enqueue to lower lvl
+586|Scheduled PID 13 in level 4
+586|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20),[4]test_loop2:2(20),[6]test_loop2:2(20)
+586|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+586|active|2(55)
+586|active|3(55),[8]test_loop2:2(20)
+586|active|4(15),[13]test_loop2:4(20),[11]test_loop2:3(20),[12]test_loop2:3(20)
+586|expired|0(55)
+586|expired|1(55)
+586|expired|2(55)
+586|expired|3(55)
+586|expired|4(55),[9]test_loop2:3(20),[10]test_loop2:3(20)
+-----
+601|PID 13 returned from swtch, select next!
+601|Level 4 quantum depleted
+601|Move PID 11 from level 4 to expired level 4
+601|Move PID 12 from level 4 to expired level 4
+601|Move curproc PID 13 from level 4 to lower level
+601|No RUNNABLE proc found, SWAP SETS!
+601|Scheduled PID 9 in level 4
+601|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20),[4]test_loop2:2(20),[6]test_loop2:2(20)
+601|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+601|active|2(55)
+601|active|3(55),[8]test_loop2:2(20)
+601|active|4(55),[9]test_loop2:4(20),[10]test_loop2:3(20),[11]test_loop2:3(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+601|expired|0(55)
+601|expired|1(55)
+601|expired|2(55)
+601|expired|3(55)
+601|expired|4(55)
+-----
+PID 9 exited, removing from active set
+614|PID 9 returned from swtch, select next!
+615|Scheduled PID 4 in level 0
+615|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20),[4]test_loop2:4(20),[6]test_loop2:2(20)
+615|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+615|active|2(55)
+615|active|3(55),[8]test_loop2:2(20)
+615|active|4(42),[10]test_loop2:3(20),[11]test_loop2:3(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+615|expired|0(55)
+615|expired|1(55)
+615|expired|2(55)
+615|expired|3(55)
+615|expired|4(55)
+-----
+PID 4 exited, removing from active set
+616|PID 4 returned from swtch, select next!
+616|Scheduled PID 3 in level 0
+616|active|0(54),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:4(20),[6]test_loop2:2(20)
+616|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+616|active|2(55)
+616|active|3(55),[8]test_loop2:2(20)
+616|active|4(42),[10]test_loop2:3(20),[11]test_loop2:3(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+616|expired|0(55)
+616|expired|1(55)
+616|expired|2(55)
+616|expired|3(55)
+616|expired|4(55)
+-----
+617|PID 3 returned from swtch, select next!
+617|Curproc (PID 3) still have quantum, enqueue to same lvl 0
+618|Scheduled PID 10 in level 4
+618|active|0(53),[1]init:2(20),[2]sh:2(20),[6]test_loop2:2(20),[3]test_priofork2:2(19)
+618|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+618|active|2(55)
+618|active|3(55),[8]test_loop2:2(20)
+618|active|4(42),[10]test_loop2:4(20),[11]test_loop2:3(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+618|expired|0(55)
+618|expired|1(55)
+618|expired|2(55)
+618|expired|3(55)
+618|expired|4(55)
+-----
+PID 10 exited, removing from active set
+630|PID 10 returned from swtch, select next!
+631|Scheduled PID 6 in level 0
+631|active|0(53),[1]init:2(20),[2]sh:2(20),[6]test_loop2:4(20),[3]test_priofork2:2(19)
+631|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+631|active|2(55)
+631|active|3(55),[8]test_loop2:2(20)
+631|active|4(30),[11]test_loop2:3(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+631|expired|0(55)
+631|expired|1(55)
+631|expired|2(55)
+631|expired|3(55)
+631|expired|4(55)
+-----
+PID 6 exited, removing from active set
+632|PID 6 returned from swtch, select next!
+632|Scheduled PID 3 in level 0
+632|active|0(52),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:4(19)
+632|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+632|active|2(55)
+632|active|3(55),[8]test_loop2:2(20)
+632|active|4(30),[11]test_loop2:3(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+632|expired|0(55)
+632|expired|1(55)
+632|expired|2(55)
+632|expired|3(55)
+632|expired|4(55)
+-----
+633|PID 3 returned from swtch, select next!
+633|Curproc (PID 3) still have quantum, enqueue to same lvl 0
+634|Scheduled PID 11 in level 4
+634|active|0(51),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(18)
+634|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+634|active|2(55)
+634|active|3(55),[8]test_loop2:2(20)
+634|active|4(30),[11]test_loop2:4(20),[12]test_loop2:3(20),[13]test_loop2:3(20)
+634|expired|0(55)
+634|expired|1(55)
+634|expired|2(55)
+634|expired|3(55)
+634|expired|4(55)
+-----
+654|PID 11 returned from swtch, select next!
+654|Curproc (PID 11) used up quantum, enqueue to lower lvl
+654|Scheduled PID 12 in level 4
+654|active|0(51),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(18)
+654|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+654|active|2(55)
+654|active|3(55),[8]test_loop2:2(20)
+654|active|4(10),[12]test_loop2:4(20),[13]test_loop2:3(20)
+654|expired|0(55)
+654|expired|1(55)
+654|expired|2(55)
+654|expired|3(55)
+654|expired|4(55),[11]test_loop2:3(20)
+-----
+664|PID 12 returned from swtch, select next!
+664|Level 4 quantum depleted
+664|Move PID 13 from level 4 to expired level 4
+664|Move curproc PID 12 from level 4 to lower level
+664|No RUNNABLE proc found, SWAP SETS!
+664|Scheduled PID 11 in level 4
+664|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20)
+664|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+664|active|2(55)
+664|active|3(55),[8]test_loop2:2(20)
+664|active|4(55),[11]test_loop2:4(20),[13]test_loop2:3(20),[12]test_loop2:3(20)
+664|expired|0(55)
+664|expired|1(55)
+664|expired|2(55)
+664|expired|3(55)
+664|expired|4(55)
+-----
+684|PID 11 returned from swtch, select next!
+684|Curproc (PID 11) used up quantum, enqueue to lower lvl
+684|Scheduled PID 13 in level 4
+684|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20)
+684|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+684|active|2(55)
+684|active|3(55),[8]test_loop2:2(20)
+684|active|4(35),[13]test_loop2:4(20),[12]test_loop2:3(20)
+684|expired|0(55)
+684|expired|1(55)
+684|expired|2(55)
+684|expired|3(55)
+684|expired|4(55),[11]test_loop2:3(20)
+-----
+704|PID 13 returned from swtch, select next!
+704|Curproc (PID 13) used up quantum, enqueue to lower lvl
+704|Scheduled PID 12 in level 4
+704|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20)
+704|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+704|active|2(55)
+704|active|3(55),[8]test_loop2:2(20)
+704|active|4(15),[12]test_loop2:4(20)
+704|expired|0(55)
+704|expired|1(55)
+704|expired|2(55)
+704|expired|3(55)
+704|expired|4(55),[11]test_loop2:3(20),[13]test_loop2:3(20)
+-----
+719|PID 12 returned from swtch, select next!
+719|Level 4 quantum depleted
+719|Move curproc PID 12 from level 4 to lower level
+719|No RUNNABLE proc found, SWAP SETS!
+719|Scheduled PID 11 in level 4
+719|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20)
+719|active|1(55),[5]test_loop2:2(20),[7]test_loop2:2(20)
+719|active|2(55)
+719|active|3(55),[8]test_loop2:2(20)
+719|active|4(55),[11]test_loop2:4(20),[13]test_loop2:3(20),[12]test_loop2:3(20)
+719|expired|0(55)
+719|expired|1(55)
+719|expired|2(55)
+719|expired|3(55)
+719|expired|4(55)
+-----
+PID 11 exited, removing from active set
+730|PID 11 returned from swtch, select next!
+730|Scheduled PID 5 in level 1
+730|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20)
+730|active|1(55),[5]test_loop2:4(20),[7]test_loop2:2(20)
+730|active|2(55)
+730|active|3(55),[8]test_loop2:2(20)
+730|active|4(44),[13]test_loop2:3(20),[12]test_loop2:3(20)
+730|expired|0(55)
+730|expired|1(55)
+730|expired|2(55)
+730|expired|3(55)
+730|expired|4(55)
+-----
+PID 5 exited, removing from active set
+731|PID 5 returned from swtch, select next!
+731|Scheduled PID 3 in level 0
+731|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:4(20)
+731|active|1(54),[7]test_loop2:2(20)
+731|active|2(55)
+731|active|3(55),[8]test_loop2:2(20)
+731|active|4(44),[13]test_loop2:3(20),[12]test_loop2:3(20)
+731|expired|0(55)
+731|expired|1(55)
+731|expired|2(55)
+731|expired|3(55)
+731|expired|4(55)
+-----
+732|PID 3 returned from swtch, select next!
+732|Curproc (PID 3) still have quantum, enqueue to same lvl 0
+732|Scheduled PID 13 in level 4
+732|active|0(54),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(19)
+732|active|1(54),[7]test_loop2:2(20)
+732|active|2(55)
+732|active|3(55),[8]test_loop2:2(20)
+732|active|4(44),[13]test_loop2:4(20),[12]test_loop2:3(20)
+732|expired|0(55)
+732|expired|1(55)
+732|expired|2(55)
+732|expired|3(55)
+732|expired|4(55)
+-----
+752|PID 13 returned from swtch, select next!
+752|Curproc (PID 13) used up quantum, enqueue to lower lvl
+752|Scheduled PID 12 in level 4
+752|active|0(54),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(19)
+752|active|1(54),[7]test_loop2:2(20)
+752|active|2(55)
+752|active|3(55),[8]test_loop2:2(20)
+752|active|4(24),[12]test_loop2:4(20)
+752|expired|0(55)
+752|expired|1(55)
+752|expired|2(55)
+752|expired|3(55)
+752|expired|4(55),[13]test_loop2:3(20)
+-----
+772|PID 12 returned from swtch, select next!
+772|Curproc (PID 12) used up quantum, enqueue to lower lvl
+772|No RUNNABLE proc found, SWAP SETS!
+772|Scheduled PID 13 in level 4
+772|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20)
+772|active|1(55),[7]test_loop2:2(20)
+772|active|2(55)
+772|active|3(55),[8]test_loop2:2(20)
+772|active|4(55),[13]test_loop2:4(20),[12]test_loop2:3(20)
+772|expired|0(55)
+772|expired|1(55)
+772|expired|2(55)
+772|expired|3(55)
+772|expired|4(55)
+-----
+PID 13 exited, removing from active set
+786|PID 13 returned from swtch, select next!
+786|Scheduled PID 8 in level 3
+786|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(20)
+786|active|1(55),[7]test_loop2:2(20)
+786|active|2(55)
+786|active|3(55),[8]test_loop2:4(20)
+786|active|4(41),[12]test_loop2:3(20)
+786|expired|0(55)
+786|expired|1(55)
+786|expired|2(55)
+786|expired|3(55)
+786|expired|4(55)
+-----
+PID 8 exited, removing from active set
+787|PID 8 returned from swtch, select next!
+788|Scheduled PID 3 in level 0
+788|active|0(55),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:4(20)
+788|active|1(55),[7]test_loop2:2(20)
+788|active|2(55)
+788|active|3(54)
+788|active|4(41),[12]test_loop2:3(20)
+788|expired|0(55)
+788|expired|1(55)
+788|expired|2(55)
+788|expired|3(55)
+788|expired|4(55)
+-----
+789|PID 3 returned from swtch, select next!
+789|Curproc (PID 3) still have quantum, enqueue to same lvl 0
+789|Scheduled PID 12 in level 4
+789|active|0(54),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(19)
+789|active|1(55),[7]test_loop2:2(20)
+789|active|2(55)
+789|active|3(54)
+789|active|4(41),[12]test_loop2:4(20)
+789|expired|0(55)
+789|expired|1(55)
+789|expired|2(55)
+789|expired|3(55)
+789|expired|4(55)
+-----
+PID 12 exited, removing from active set
+807|PID 12 returned from swtch, select next!
+808|Scheduled PID 7 in level 1
+808|active|0(54),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:2(19)
+808|active|1(55),[7]test_loop2:4(20)
+808|active|2(55)
+808|active|3(54)
+808|active|4(23)
+808|expired|0(55)
+808|expired|1(55)
+808|expired|2(55)
+808|expired|3(55)
+808|expired|4(55)
+-----
+PID 7 exited, removing from active set
+809|PID 7 returned from swtch, select next!
+810|Scheduled PID 3 in level 0
+810|active|0(54),[1]init:2(20),[2]sh:2(20),[3]test_priofork2:4(19)
+810|active|1(54)
+810|active|2(55)
+810|active|3(54)
+810|active|4(23)
+810|expired|0(55)
+810|expired|1(55)
+810|expired|2(55)
+810|expired|3(55)
+810|expired|4(55)
+-----
