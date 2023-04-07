@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "x86.h": "c",
+        "traps.h": "c",
+        "memlayout.h": "c",
+        "defs.h": "c"
+    }
+}
