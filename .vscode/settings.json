@@ -3,6 +3,11 @@
         "x86.h": "c",
         "traps.h": "c",
         "memlayout.h": "c",
-        "defs.h": "c"
-    }
+        "defs.h": "c",
+        "param.h": "c",
+        "user.h": "c",
+        "types.h": "c",
+        "rsdl.h": "c"
+    },
+    "cmake.configureOnOpen": true
 }
